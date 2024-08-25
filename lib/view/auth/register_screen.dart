@@ -43,8 +43,14 @@ class RegisterScreen extends StatelessWidget {
                 ),
                 child: TextFormField(
                   controller: emailController,
-                  decoration: const InputDecoration(
-                      hintText: 'Email', border: const OutlineInputBorder()),
+                  decoration: InputDecoration(
+                    hintText: 'Email',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -55,8 +61,14 @@ class RegisterScreen extends StatelessWidget {
                 ),
                 child: TextFormField(
                   controller: passwordController,
-                  decoration: const InputDecoration(
-                      hintText: 'Password', border: const OutlineInputBorder()),
+                  decoration: InputDecoration(
+                    hintText: 'Password',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                   obscureText: true,
                 ),
               ),
@@ -68,9 +80,14 @@ class RegisterScreen extends StatelessWidget {
                 ),
                 child: TextFormField(
                   controller: repasswordController,
-                  decoration: const InputDecoration(
-                      hintText: 'Enter Password again',
-                      border: const OutlineInputBorder()),
+                  decoration: InputDecoration(
+                    hintText: 'Enter Password again',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                   obscureText: true,
                 ),
               ),

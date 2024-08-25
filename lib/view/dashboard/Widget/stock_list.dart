@@ -2,18 +2,23 @@ import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 import 'package:stock_app/model/stock.dart';
+import 'package:stock_app/navigation/navigation_helper.dart';
 import 'package:stock_app/providers/stock_provider.dart';
+import 'package:stock_app/view/stockdetail/stockdetail_screen.dart';
 
 class StockList extends StatelessWidget {
   
   final List<Stock> stocks;
-  const StockList({Key? key, required this.stocks}) : super(key: key);
+  final ScrollController scrollController;
+  
+  const StockList({Key? key, required this.stocks,required this.scrollController}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
     return ListView.builder(
       itemCount: stocks.length,
+      controller: scrollController,
       itemBuilder: (ctx, index) {
         final stock = stocks[index];
         return Card(
@@ -107,6 +112,9 @@ class StockList extends StatelessWidget {
                 ],
               ),
             ),
+            onTap: (){
+              NavigationHelper.navigatePushSlideFromRight(context,StockDetailScreen(ticker: stock.ticker));
+            },
           ),
         );
       },

@@ -36,6 +36,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         home: LoginScreen(),
+        // home:LineChartSample2(),
         debugShowCheckedModeBanner: false,
       ),
     );

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -6,13 +5,10 @@ import 'package:stock_app/model/stock.dart';
 
 class StockProvider with ChangeNotifier {
   List<Stock> _stocks = [];
-  Timer? _timer;
-
   List<Stock> get stocks => _stocks;
 
-  StockProvider() {
-    _startAutoUpdate();
-  }
+  List<List<Stock>> _stockHistory = [];
+  List<List<Stock>> get stockHistory => _stockHistory;
 
   Future<void> fetchStocks() async {
     final url = Uri.parse('https://stocktraders.vn/service/data/getTotalTradeReal');
@@ -32,6 +28,7 @@ class StockProvider with ChangeNotifier {
         if (data.containsKey('TotalTradeRealReply')) {
           final stockList = data['TotalTradeRealReply']['stockTotalReals'] as List;
           _stocks = stockList.map((stockData) => Stock.fromJson(stockData)).toList();
+          _stockHistory.add(_stocks);
           notifyListeners(); 
         } else {
           throw Exception('Unexpected data structure in response.');
@@ -42,17 +39,5 @@ class StockProvider with ChangeNotifier {
     } catch (error) {
       throw Exception('Failed to fetch stocks: $error');
     }
-  }
-
-  void _startAutoUpdate() {
-    _timer = Timer.periodic(Duration(seconds: 10), (timer) {
-      fetchStocks();
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
   }
 }

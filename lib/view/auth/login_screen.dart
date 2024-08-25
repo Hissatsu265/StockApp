@@ -48,13 +48,21 @@ class LoginScreen extends StatelessWidget {
                   ),
                   child: TextFormField(
                     controller: emailController,
-                    decoration: const InputDecoration(
-                        hintText: 'Email', border: const OutlineInputBorder()),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'Email',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
                 PasswordField(),
-                const SizedBox(height: 15,),
+                const SizedBox(
+                  height: 15,
+                ),
                 Consumer<AuthService>(
                   builder: (context, authService, child) {
                     return authService.isLoading
@@ -139,7 +147,11 @@ class _PasswordFieldState extends State<PasswordField> {
         controller: passwordController,
         decoration: InputDecoration(
             hintText: 'Password',
-            border: const OutlineInputBorder(),
+            filled: true,
+            fillColor: Colors.white,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
             suffixIcon: IconButton(
               icon: Icon(
                 _obscureText ? Icons.visibility : Icons.visibility_off,

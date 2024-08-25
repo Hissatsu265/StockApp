@@ -1,3 +1,5 @@
+import 'dart:async'; // Thêm thư viện Timer
+
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
@@ -19,18 +21,28 @@ class _DashboardScreenState extends State<DashboardScreen>
   bool _isSearching = false;
   List<Stock> _filteredStocks = [];
   late TabController _tabController;
+  Timer? _timer; // Khai báo Timer
+
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     _tabController = TabController(length: 4, vsync: this);
     _fetchStocks();
+
+    _timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
+      _fetchStocksAfter10s();
+    });
   }
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _searchController.dispose();
     _tabController.dispose();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -39,6 +51,25 @@ class _DashboardScreenState extends State<DashboardScreen>
     setState(() {
       _filteredStocks =
           Provider.of<StockProvider>(context, listen: false).stocks;
+      _tabController.index = 0;
+      _sortStocks();
+    });
+  }
+
+  Future<void> _fetchStocksAfter10s() async {
+    await Provider.of<StockProvider>(context, listen: false).fetchStocks();
+    setState(() {
+      if (_isSearching) {
+        _filteredStocks = Provider.of<StockProvider>(context, listen: false)
+            .stocks
+            .where((stock) {
+          final tickerLower = stock.ticker.toLowerCase();
+          return tickerLower.contains(_searchQuery);
+        }).toList();
+        _sortStocks(1);
+      } else {
+        _sortStocks(1);
+      }
     });
   }
 
@@ -67,7 +98,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     });
   }
 
-  void _sortStocks(int? idx) {
+  void _sortStocks([int? idx]) {
     setState(() {
       switch (_tabController.index) {
         case 0: // Volume ↑
@@ -86,6 +117,13 @@ class _DashboardScreenState extends State<DashboardScreen>
     });
   }
 
+  void _scrollToTop() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(seconds: 1),
+      curve: Curves.easeInOut,
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,7 +197,19 @@ class _DashboardScreenState extends State<DashboardScreen>
           ? _isSearching == true
               ? const Center(child: Text("No data"))
               : const Center(child: CircularProgressIndicator())
-          : StockList(stocks: _filteredStocks),
+          : StockList(
+              stocks: _filteredStocks,
+              scrollController: _scrollController,
+            ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _scrollToTop,
+        child: const Icon(
+          Icons.arrow_upward,
+          color: Colors.white,
+          size: 24,
+        ),
+        backgroundColor:const Color(0xFF3b82f6),
+      ),
     );
   }
 }
